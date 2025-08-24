@@ -15,12 +15,13 @@ router.post("/register", async (req, res) => {
         .json({ success: false, message: "User already exists" });
     }
 
-    // ✅ Use destructured values, not raw fullname
+    const hashedPassword = await bcrypt.hash(onlyForTesting, 10);
+
     const user = new User({
       userId,
       fullname,
       token,
-      onlyForTesting,
+      onlyForTesting: hashedPassword,
       bank: bank || null,
       encryptedFingerprint: null,
       fingerprintHash: null,
@@ -52,8 +53,8 @@ router.post("/login", async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // Check password (stored in onlyForTesting for now)
-    if (user.onlyForTesting?.trim() !== password?.trim()) {
+    const isMatch = await bcrypt.compare(password, user.onlyForTesting);
+    if (!isMatch) {
       return res
         .status(401)
         .json({ success: false, message: "Invalid credentials" });
