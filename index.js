@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const express = require("express");
 const connectDB = require("./config/db");
 
@@ -15,6 +16,8 @@ app.use(express.json());
 
 // database
 connectDB();
+
+app.get("/", (req, res) => res.send("FingerPay Backend Running"));
 
 // routes
 app.use("/api/users", userRoutes);
