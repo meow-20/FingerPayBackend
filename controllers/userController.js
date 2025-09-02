@@ -82,3 +82,41 @@ exports.getProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Update profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const updates = req.body; // e.g., { first_name, last_name, country, device_info }
+
+    // Only allow certain fields to be updated
+    const allowedFields = [
+      "first_name",
+      "last_name",
+      "country",
+      "device_info",
+      "biometric_enabled",
+      "profile_picture_url",
+      "date_of_birth"
+    ];
+
+    const updateData = {};
+    allowedFields.forEach(field => {
+      if (updates[field] !== undefined) updateData[field] = updates[field];
+    });
+
+    updateData.updated_at = Date.now();
+
+    const user = await User.findOneAndUpdate(
+      { user_id: req.user_id },
+      updateData,
+      { new: true, runValidators: true }
+    ).select("-password_hash");
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ message: "Profile updated", user });
+  } catch (err) {
+    console.error("Update profile error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};

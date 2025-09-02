@@ -4,10 +4,10 @@ const express = require("express");
 const connectDB = require("./config/db");
 
 const userRoutes = require("./routes/userRoutes");
-const walletRoutes = require("./routes/walletRoutes");
-const bankRoutes = require("./routes/bankRoutes");
-const cardRoutes = require("./routes/cardRoutes");
-const transactionRoutes = require("./routes/transactionRoutes");
+// const walletRoutes = require("./routes/walletRoutes");
+// const bankRoutes = require("./routes/bankRoutes");
+// const cardRoutes = require("./routes/cardRoutes");
+// const transactionRoutes = require("./routes/transactionRoutes");
 
 const app = express();
 
@@ -21,10 +21,10 @@ app.get("/", (req, res) => res.send("FingerPay Backend Running"));
 
 // routes
 app.use("/api/users", userRoutes);
-app.use("/api/wallets", walletRoutes);
-app.use("/api/banks", bankRoutes);
-app.use("/api/cards", cardRoutes);
-app.use("/api/transactions", transactionRoutes);
+// app.use("/api/wallets", walletRoutes);
+// app.use("/api/banks", bankRoutes);
+// app.use("/api/cards", cardRoutes);
+// app.use("/api/transactions", transactionRoutes);
 
 // error handling middleware
 app.use((err, req, res, next) => {
