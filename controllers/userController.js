@@ -73,7 +73,7 @@ exports.loginUser = async (req, res) => {
 // 📌 Get User Profile
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.userId).select("-password_hash");
+    const user = await User.findById(req.user_id).select("-password_hash");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.json(user);
@@ -86,7 +86,8 @@ exports.getProfile = async (req, res) => {
 // Update profile
 exports.updateProfile = async (req, res) => {
   try {
-    const updates = req.body; // e.g., { first_name, last_name, country, device_info }
+    const updates = req.body;
+    console.log(updates);
 
     // Only allow certain fields to be updated
     const allowedFields = [
@@ -96,18 +97,18 @@ exports.updateProfile = async (req, res) => {
       "device_info",
       "biometric_enabled",
       "profile_picture_url",
-      "date_of_birth"
+      "date_of_birth",
     ];
 
     const updateData = {};
-    allowedFields.forEach(field => {
+    allowedFields.forEach((field) => {
       if (updates[field] !== undefined) updateData[field] = updates[field];
     });
 
     updateData.updated_at = Date.now();
 
-    const user = await User.findOneAndUpdate(
-      { user_id: req.user_id },
+    const user = await User.findByIdAndUpdate(
+      req.user_id,
       updateData,
       { new: true, runValidators: true }
     ).select("-password_hash");
